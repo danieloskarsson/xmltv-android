@@ -13,8 +13,7 @@ import android.webkit.WebView;
  */
 public class TVActivity extends Activity {
 
-	//private static String[] whitelist = new String[]{"svt1.svt.se", "svt2.svt.se", "tv3.viasat.se", " tv4.se", "kanal5.se", "tv6.viasat.se"};
-	private static String[] whitelist = new String[]{"svt1.svt.se", "kanal5.se"};
+	private static String[] whitelist = new String[]{"svt1.svt.se", "svt2.svt.se", "tv3.viasat.se", "tv4.se", "kanal5.se", "tv6.viasat.se"};
 	
 	private WebAssets webAssets;
 	private WebView webView;

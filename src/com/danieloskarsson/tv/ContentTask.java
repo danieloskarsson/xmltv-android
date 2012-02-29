@@ -36,7 +36,7 @@ final class ContentTask extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String html) {
 		String data = template.replace("%html%", html);
-		webView.loadData(data, "text/html", null); // Executed on the UI thread
+		webView.loadData(data, "text/html; charset=utf-8", null); // Executed on the UI thread
 	}
 
 	@Override

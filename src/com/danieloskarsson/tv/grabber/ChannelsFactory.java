@@ -5,7 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -23,8 +25,8 @@ import com.danieloskarsson.tv.model.Program;
  * @author Daniel Oskarsson (daniel.oskarsson@gmail.com)
  */
 class ChannelsFactory extends AbstractXpathFactory {
-    
-    private List<Channel> channels = new ArrayList<Channel>();
+	
+	private List<Channel> channels = new ArrayList<Channel>();
 
     public ChannelsFactory(String xmlString, List<String> whitelist) throws IOException {
         super(xmlString);
@@ -37,21 +39,23 @@ class ChannelsFactory extends AbstractXpathFactory {
             NodeList ids = (NodeList) expression.evaluate(document, XPathConstants.NODESET);
             expression = xpath.compile("/tv/channel/display-name/text()");
             NodeList names = (NodeList) expression.evaluate(document, XPathConstants.NODESET);
-                        
-            int j = 1;
+            
+        	Map<String, Channel> map = new HashMap<String, Channel>();
             for (int i = 0; i < ids.getLength(); i++) {
                 String id = ids.item(i).getNodeValue();
                 String name = names.item(i).getNodeValue();
-                if (!whitelist.contains(id)) continue; // Only fetch programs for white listed channels
-                
+                map.put(id, new Channel(id, name));
+            }
+            
+            // Only fetch programs for white listed channels, and fetch in the order of the whitelist
+            int j = 1;
+            for (String id : whitelist) {
                 Log.d("downloading...", String.format("%d/%d", j++, whitelist.size()));
-                
+				Channel channel = map.get(id);                
                 List<Program> programs = Grabber.grabPrograms(id, today);
-                Channel channel = new Channel(id, name);
                 channel.addPrograms(Calendar.getInstance().getTime(), programs);
                 channels.add(channel);
-            }
-        
+			}
         } catch (XPathExpressionException ex) {
         	Log.e(ChannelsFactory.class.getCanonicalName(), ex.getMessage());
         }
