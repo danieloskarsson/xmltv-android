@@ -1,5 +1,7 @@
 package com.danieloskarsson.tv;
 
+import com.danieloskarsson.tv.custom.CustomTvGuideRowComparator;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +15,11 @@ import android.webkit.WebView;
  */
 public class TVActivity extends Activity {
 
-	private static String[] whitelist = new String[]{"svt1.svt.se", "svt2.svt.se", "tv3.viasat.se", "tv4.se", "kanal5.se", "tv6.viasat.se"};
+	private static String[] channels = new String[]{"svt1.svt.se", "svt2.svt.se", "tv3.viasat.se", "tv4.se", "kanal5.se", "tv6.viasat.se"};
+	
+	static {
+		CustomTvGuideRowComparator.setChannels(channels);
+	}
 	
 	private WebAssets webAssets;
 	private WebView webView;
@@ -28,7 +34,7 @@ public class TVActivity extends Activity {
 		
         // This will perform a task in the background and when done update the UI using the reference to webView
         ContentTask contentTask = new ContentTask(webAssets.getTemplate(), webView);
-        contentTask.execute(whitelist);
+        contentTask.execute(channels);
     }
     
     @Override
@@ -46,7 +52,7 @@ public class TVActivity extends Activity {
     	        
     	        // This will perform a task in the background and when done update the UI using the reference to webView
     	        ContentTask contentTask = new ContentTask(webAssets.getTemplate(), webView);
-    	        contentTask.execute(whitelist);
+    	        contentTask.execute(channels);
     			return true;
     		case R.id.about:
     			webView.loadUrl("file:///android_asset/about.html");

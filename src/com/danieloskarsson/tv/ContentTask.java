@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.WebView;
 
+import com.danieloskarsson.tv.custom.CustomTvGuide;
 import com.danieloskarsson.tv.grabber.Grabber;
 import com.danieloskarsson.tv.model.Channel;
 import com.danieloskarsson.tv.model.Program;
@@ -59,23 +60,14 @@ final class ContentTask extends AsyncTask<String, Void, String> {
 			}
 		}
 		
-		StringBuilder stringBuilder = new StringBuilder();		
+		// Iterate channels and programs and create custom html representation
+		CustomTvGuide customTvGuide = new CustomTvGuide();
 		for (Channel channel : channels) {
-			List<Program> programs = channel.getPrograms(Calendar.getInstance().getTime());
-			if (programs.size() == 0) continue; // Omit Channels with no Programs
-			
-			stringBuilder.append("<img src=\"" + channel.getLogo() + "\" />");
-			stringBuilder.append("<table>");
-			stringBuilder.append("<tbody>");
-			
+			List<Program> programs = channel.getPrograms();
 			for (Program program : programs) {
-				stringBuilder.append("<tr><td>" + program.getName() +"</td><td>" + timeFormat.format(program.getStart()) + "</td><td>" + timeFormat.format(program.getStop()) + "</td></tr>");
+				customTvGuide.addProgram(program, channel.getId());
 			}
-			
-			stringBuilder.append("</tbody>");
-			stringBuilder.append("</table>");
-			stringBuilder.append("<hr>");
 		}
-		return stringBuilder.toString();
+		return customTvGuide.asHtml();
 	}
 }
